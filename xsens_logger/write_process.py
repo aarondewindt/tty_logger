@@ -13,6 +13,7 @@ def write_process_target(data_fifo_path):
                 for chunk in iter(partial(fifo.read, 1024), ''):
                     f.write(chunk)
             except (KeyboardInterrupt, SystemExit):
-                pass
+                for chunk in iter(partial(fifo.read, 1024), ''):
+                    f.write(chunk)
     print("Data dumped in '{}'.".format(log_file_path))
     os.unlink(data_fifo_path)
