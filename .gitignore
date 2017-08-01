@@ -2,3 +2,4 @@
 .idea
 *.bin
 **/__pycache__/
+**/log_count.txt

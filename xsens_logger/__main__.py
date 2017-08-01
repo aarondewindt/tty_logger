@@ -8,7 +8,7 @@ from xsens_logger.write_process import write_process_target
 
 
 def main():
-    baudrate = 460800
+    baudrate = 2000000
     xsens_info = None
     data_fifo_path = os.path.abspath("./data_fifo")
     chunk_size = 1024
