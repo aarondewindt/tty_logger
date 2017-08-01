@@ -8,7 +8,7 @@ with open(ver_path) as ver_file:
     exec(ver_file.read(), main_ns)
 
 setup(
-    name='urban_journey',
+    name='xsens_logger',
     version=main_ns['__version__'],
     description='Xsens logger',
     author='Aaron de Windt',
