@@ -4,7 +4,7 @@ from io import BytesIO
 import os
 from multiprocessing import Process
 
-from write_process import write_process_target
+from xsens_logger.write_process import write_process_target
 
 
 def main():
