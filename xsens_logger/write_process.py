@@ -13,7 +13,7 @@ def write_process_target(data_fifo_path):
                 for chunk in iter(partial(fifo.read, 1024), b''):
                     f.write(chunk)
             except (KeyboardInterrupt, SystemExit):
-                print("Logging stopped, writing the remaining bytes in the buffer...")
+                print("\nLogging stopped, writing the remaining bytes in the buffer...")
                 for chunk in iter(partial(fifo.read, 1024), b''):
                     f.write(chunk)
     print("Data dumped in '{}'.".format(log_file_path))
