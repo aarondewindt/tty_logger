@@ -36,9 +36,9 @@ def main():
         with serial_port:
             write_process.start()
             with open(data_fifo_path, "wb") as f:
-                while True:
+                while write_process.is_alive():
                     f.write(serial_port.read(chunk_size))
-    except (KeyboardInterrupt, SystemExit):
+    except (KeyboardInterrupt, SystemExit, BrokenPipeError):
         print("Logging stopped, closing...")
         print(write_process.is_alive())
         if write_process.is_alive():
