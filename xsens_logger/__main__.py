@@ -30,10 +30,14 @@ def main():
 
     serial_port = serial.Serial(xsens_info[0], baudrate, timeout=0)
 
-    print("Logging...")
     write_process = Process(target=write_process_target, args=(data_fifo_path,))
     try:
         with serial_port:
+            n_bytes_to_skip = 20000
+            while n_bytes_to_skip > 0:
+                n_bytes_to_skip -= len(serial_port.read(chunk_size))
+            print("Logging...")
+
             write_process.start()
             with open(data_fifo_path, "wb") as f:
                 while write_process.is_alive():
