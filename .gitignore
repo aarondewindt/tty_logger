@@ -1,0 +1,4 @@
+
+.idea
+*.bin
+**/__pycache__/
