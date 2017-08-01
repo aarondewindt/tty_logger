@@ -39,7 +39,6 @@ def main():
                 while write_process.is_alive():
                     f.write(serial_port.read(chunk_size))
     except (KeyboardInterrupt, SystemExit, BrokenPipeError):
-        print("Logging stopped, closing...")
         if write_process.is_alive():
             write_process.join()
         print("Done")
