@@ -1,9 +1,11 @@
 from functools import partial
 import os
+from tqdm import tqdm
 
 
 def write_process_target(data_fifo_path):
-
+    s = os.statvfs(os.path.dirname(data_fifo_path))
+    available_memory = s.f_frsize * s.f_bavail
     if not os.path.isfile("log_count.txt"):
             log_count = 0
     else:
@@ -21,12 +23,14 @@ def write_process_target(data_fifo_path):
 
     with open(data_fifo_path, "rb") as fifo:
         with open(log_file_path, "wb") as f:
-            try:
-                for chunk in iter(partial(fifo.read, 1024), b''):
-                    f.write(chunk)
-            except (KeyboardInterrupt, SystemExit):
-                print("\nLogging stopped, writing the remaining bytes in the buffer...")
-                for chunk in iter(partial(fifo.read, 1024), b''):
-                    f.write(chunk)
+            with tqdm(total=available_memory, unit="B", unit_scale=True) as pbar:
+                try:
+                    for chunk in iter(partial(fifo.read, 1024), b''):
+                        pbar.update(len(chunk))
+                        f.write(chunk)
+                except (KeyboardInterrupt, SystemExit):
+                    print("\nLogging stopped, writing the remaining bytes in the buffer...")
+                    for chunk in iter(partial(fifo.read, 1024), b''):
+                        f.write(chunk)
     print("Data dumped in '{}'.".format(log_file_path))
     os.unlink(data_fifo_path)
