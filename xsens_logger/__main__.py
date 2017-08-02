@@ -1,4 +1,6 @@
 import serial
+from time import sleep
+
 from serial.tools import list_ports
 from io import BytesIO
 import os
@@ -29,19 +31,42 @@ def main():
     print("Connecting to Xsens at '{}'...".format(xsens_info[0]))
 
     serial_port = serial.Serial(xsens_info[0], baudrate, timeout=0)
-
     write_process = Process(target=write_process_target, args=(data_fifo_path,))
     try:
         with serial_port:
             n_bytes_to_skip = 20000
             while n_bytes_to_skip > 0:
                 n_bytes_to_skip -= len(serial_port.read(chunk_size))
-            print("Logging...")
 
             write_process.start()
             with open(data_fifo_path, "wb") as f:
+
+                # Reset xsens
+                # serial_port.write(b'\xfa\xff\x40\x00\xc1')
+                # serial_port.flush()
+                # sleep(0.5)
+
+                # Goto configuration mode
+                serial_port.write(b'\xfa\xff\x30\x00\xd1')
+                serial_port.flush()
+                sleep(0.1)
+
+                # Request device ID
+                serial_port.write(b'\xfa\xff\x00\x00\x01')
+                serial_port.flush()
+                sleep(0.1)
+
+                f.write(serial_port.read(chunk_size))
+
+                # Goto measurement mode
+                serial_port.write(b'\xfa\xff\x10\x00\xf1')
+                serial_port.flush()
+
+                print("Logging...")
+
                 while write_process.is_alive():
                     f.write(serial_port.read(chunk_size))
+
     except (KeyboardInterrupt, SystemExit, BrokenPipeError):
         if write_process.is_alive():
             write_process.join()
