@@ -30,7 +30,7 @@ def main():
 
     print("Connecting to Xsens at '{}'...".format(xsens_info[0]))
 
-    serial_port = serial.Serial(xsens_info[0], baudrate, timeout=0)
+    serial_port = serial.Serial(xsens_info[0], baudrate, timeout=None)
     write_process = Process(target=write_process_target, args=(data_fifo_path,))
     try:
         with serial_port:
