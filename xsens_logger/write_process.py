@@ -5,18 +5,7 @@ from tqdm import tqdm
 
 def write_process_target(data_fifo_path):
     s = os.statvfs(os.path.dirname(data_fifo_path))
-    available_memory = s.f_frsize * s.f_bavail
-    if not os.path.isfile("log_count.txt"):
-            log_count = 0
-    else:
-        with open("log_count.txt", "r") as f:
-            try:
-                log_count = int(f.read()) + 1
-            except ValueError:
-                log_count = 0
-
-    with open("log_count.txt", "w") as f:
-        f.write(str(log_count))
+    available_memory = s.f_frsize * s.f_bavail 
 
     log_file_path = os.path.abspath("./xsens_log_{}.bin".format(log_count))
     # print("Writing to '{}'".format(log_file_path))

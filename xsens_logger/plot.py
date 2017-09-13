@@ -1,7 +1,9 @@
+# This file is used to plot the data
+# Converting data is done through sim_common
+
 import matplotlib.pyplot as plt
 import pickle
 import numpy as np
-
 
 with open("xsens_log_18.pickle", "rb") as f:
     tables = pickle.load(f)
