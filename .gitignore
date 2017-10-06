@@ -7,3 +7,4 @@
 *.msgp.gz
 *.csv
 *.mat
+*.egg-info
