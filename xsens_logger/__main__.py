@@ -15,23 +15,41 @@ def main():
     data_fifo_path = os.path.abspath("./data_fifo")
     chunk_size = 1024
 
+    xsenses = []
+    data_fifo_paths = []
+
     print("Looking for Xsens...")
     for n, (port, desc, hwid) in enumerate(list_ports.comports(), 1):
         if "MTi-100" in desc:
-            xsens_info = (port, desc, hwid, n)
+            xsenses.append((port, desc, hwid, n))
             break
 
     if xsens_info is None:
         raise Exception("Xsens not found.")
 
-    if os.path.exists(data_fifo_path):
-        os.unlink(data_fifo_path)
-    os.mkfifo(data_fifo_path)
+    for i, xsens in enumerate(xsenses):
+        data_fifo_paths.append("./data_fifo_{}".format(i))
+        if os.path.exists(data_fifo_path):
+            os.unlink(data_fifo_path)
+        os.mkfifo(data_fifo_path)
 
     print("Connecting to Xsens at '{}'...".format(xsens_info[0]))
 
+    # Find log count
+    if not os.path.isfile("log_count.txt"):
+            log_count = 0
+    else:
+        with open("log_count.txt", "r") as f:
+            try:
+                log_count = int(f.read()) + 1
+            except ValueError:
+                log_count = 0
+
+    with open("log_count.txt", "w") as f:
+        f.write(str(log_count))
+
     serial_port = serial.Serial(xsens_info[0], baudrate, timeout=None)
-    write_process = Process(target=write_process_target, args=(data_fifo_path,))
+    write_process = Process(target=write_process_target, args=(data_fifo_path, id. log_count))
     try:
         with serial_port:
             n_bytes_to_skip = 20000

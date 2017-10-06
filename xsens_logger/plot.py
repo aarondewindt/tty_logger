@@ -3,7 +3,8 @@ from sim_common import File
 import numpy as np
 
 
-tables = File("xsens_log_0.msgp.gz").load()
+tables = File("../test_7/chunk_160.msgp.gz").load()
+File("../test_7/chunk_160.mat").dump(tables)
 
 tables['packet_counter_diff'] = {'time': None, 'data': None}
 tables['packet_counter_diff']['time'] = tables['packet_counter']['time'][:-1]
